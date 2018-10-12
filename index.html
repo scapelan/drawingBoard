@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>画板</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+    <canvas id="canvas" width="300" height="300" style="background: yellow"></canvas>
+    <div class="actions" id="actions">
+        <button id="eraser">橡皮擦</button>
+        <button id="brush">画笔</button>
+    </div>
+    <script>
+        var canvas = document.getElementById('canvas')
+        var context = canvas.getContext('2d')
+
+        //窗口改变时，自动改变canvas大小
+        autoSetCanvasSize(canvas)
+        //监听鼠标事件
+        listenToMouse(canvas)
+        
+        //切换橡皮擦和画笔
+        var eraserEnabled = false
+        var actions = document.getElementById('actions')
+        var eraser = document.getElementById('eraser')
+        var brush = document.getElementById('brush')
+        eraser.onclick = function () {
+            eraserEnabled = true
+            actions.className = 'actions x'
+        }     
+        brush.onclick = function () {
+            eraserEnabled = false
+            actions.className = 'actions'
+        }
+
+        function drawCircle(x, y, radius) {
+            context.beginPath()
+            context.fillStyle = 'black'
+            context.arc(x, y, radius, 0, Math.PI * 2)
+            context.fill()
+        }
+
+        function drawLine(x1, y1, x2, y2) {
+            context.beginPath()
+            context.strokeStyle = 'black'
+            context.moveTo(x1, y1)
+            context.lineWidth = 5
+            context.lineTo(x2, y2)
+            context.stroke()
+            context.closePath()
+        }
+
+        function autoSetCanvasSize(canvas) {
+            setCanvasSize()
+            window.onresize = function () {
+                setCanvasSize()
+            }
+
+            function setCanvasSize() {
+                var pageWidth = document.documentElement.clientWidth
+                var pageHeight = document.documentElement.clientHeight
+
+                canvas.width = pageWidth
+                canvas.height = pageHeight
+            }
+        }
+
+        function listenToMouse(canvas) {
+            var lastPoint = {
+                x: undefined,
+                y: undefined
+            }
+
+            var using = false
+            canvas.onmousedown = function (e) {
+                var x = e.clientX
+                var y = e.clientY
+                using = true
+                if (eraserEnabled) {
+                    context.clearRect(x - 5, y - 5, 10, 10)
+                } else {
+                    lastPoint = {
+                        x: x,
+                        y: y
+                    }
+                }
+            }
+            canvas.onmousemove = function (e) {
+                var x = e.clientX
+                var y = e.clientY
+                if(!using){return}
+                if (eraserEnabled) {
+                    context.clearRect(x - 5, y - 5, 10, 10)    
+                } else {
+                    var newPoint = {
+                        x: x,
+                        y: y
+                    }
+                    drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y)
+                    lastPoint = newPoint
+                }
+            }
+            canvas.onmouseup = function () {
+                using = false
+            }
+        }        
+    </script>
+</body>
+
+</html>
