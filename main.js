@@ -26,6 +26,7 @@ pen.onclick = function () {
 }
 clear.onclick = function () {
     context.clearRect(0, 0, canvas.width, canvas.height);
+    setCanvasBackground('white')
 }
 save.onclick = function () {
     // 安卓chrome可以，小米自带浏览器不行
@@ -120,7 +121,8 @@ function listenToUser(canvas) {
             var y = e.touches[0].clientY
             using = true
             if (eraserEnabled) {
-                context.clearRect(x - 5, y - 5, 10, 10)
+                context.fillStyle = 'white'
+                context.fillRect(x-5, y-5, 10, 10)
             } else {
                 lastPoint = {
                     x: x,
@@ -136,7 +138,9 @@ function listenToUser(canvas) {
                 return
             }
             if (eraserEnabled) {
-                context.clearRect(x - 5, y - 5, 10, 10)
+                // context.clearRect(x - 5, y - 5, 10, 10) ,用clearRect保存时透明背景变黑
+                context.fillStyle = 'white'
+                context.fillRect(x-5, y-5, 10, 10)
             } else {
                 var newPoint = {
                     x: x,
