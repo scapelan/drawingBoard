@@ -25,7 +25,6 @@ pen.onclick = function () {
     eraser.classList.remove('active')
 }
 clear.onclick = function () {
-    context.clearRect(0, 0, canvas.width, canvas.height);
     setCanvasBackground('white')
 }
 save.onclick = function () {
@@ -160,7 +159,8 @@ function listenToUser(canvas) {
             var y = e.clientY
             using = true
             if (eraserEnabled) {
-                context.clearRect(x - 5, y - 5, 10, 10)
+                context.fillStyle = 'white'
+                context.fillRect(x-5, y-5, 10, 10)
             } else {
                 lastPoint = {
                     x: x,
@@ -175,7 +175,8 @@ function listenToUser(canvas) {
                 return
             }
             if (eraserEnabled) {
-                context.clearRect(x - 5, y - 5, 10, 10)
+                context.fillStyle = 'white'
+                context.fillRect(x-5, y-5, 10, 10)
             } else {
                 var newPoint = {
                     x: x,
